@@ -1,0 +1,21 @@
+function r = rot_mat(phi, theta, psi, option)
+    pqr2ang_dot = [
+        1 sin(phi)*tan(theta) cos(phi)*tan(theta);
+        0 cos(phi) -sin(phi);
+        0 sin(phi)/cos(theta) cos(phi)/cos(theta)
+    ];
+    uvw2pos_dot = [                  cos(psi)*cos(theta)                                 cos(theta)*sin(psi)                    -sin(theta);
+               cos(psi)*sin(phi)*sin(theta) - cos(phi)*sin(psi)    cos(phi)*cos(psi) + sin(phi)*sin(psi)*sin(theta)    cos(theta)*sin(phi);
+               sin(phi)*sin(psi) + cos(phi)*cos(psi)*sin(theta)    cos(phi)*sin(psi)*sin(theta) - cos(psi)*sin(phi)    cos(phi)*cos(theta)]'; 
+    pos_dot2uvw = [ (cos(psi)*cos(theta))/(cos(psi)^2*cos(theta)^2 + cos(psi)^2*sin(theta)^2 + cos(theta)^2*sin(psi)^2 + sin(psi)^2*sin(theta)^2)       -(cos(phi)*cos(theta)^2*sin(psi) + cos(phi)*sin(psi)*sin(theta)^2 - cos(psi)*sin(phi)*sin(theta))/(cos(phi)^2*cos(psi)^2*cos(theta)^2 + cos(phi)^2*cos(psi)^2*sin(theta)^2 + cos(phi)^2*cos(theta)^2*sin(psi)^2 + cos(phi)^2*sin(psi)^2*sin(theta)^2 + cos(psi)^2*cos(theta)^2*sin(phi)^2 + cos(psi)^2*sin(phi)^2*sin(theta)^2 + cos(theta)^2*sin(phi)^2*sin(psi)^2 + sin(phi)^2*sin(psi)^2*sin(theta)^2)     (sin(phi)*sin(psi)*cos(theta)^2 + sin(phi)*sin(psi)*sin(theta)^2 + cos(phi)*cos(psi)*sin(theta))/(cos(phi)^2*cos(psi)^2*cos(theta)^2 + cos(phi)^2*cos(psi)^2*sin(theta)^2 + cos(phi)^2*cos(theta)^2*sin(psi)^2 + cos(phi)^2*sin(psi)^2*sin(theta)^2 + cos(psi)^2*cos(theta)^2*sin(phi)^2 + cos(psi)^2*sin(phi)^2*sin(theta)^2 + cos(theta)^2*sin(phi)^2*sin(psi)^2 + sin(phi)^2*sin(psi)^2*sin(theta)^2)  ;
+               (cos(theta)*sin(psi))/(cos(psi)^2*cos(theta)^2 + cos(psi)^2*sin(theta)^2 + cos(theta)^2*sin(psi)^2 + sin(psi)^2*sin(theta)^2)        (cos(phi)*cos(psi)*cos(theta)^2 + cos(phi)*cos(psi)*sin(theta)^2 + sin(phi)*sin(psi)*sin(theta))/(cos(phi)^2*cos(psi)^2*cos(theta)^2 + cos(phi)^2*cos(psi)^2*sin(theta)^2 + cos(phi)^2*cos(theta)^2*sin(psi)^2 + cos(phi)^2*sin(psi)^2*sin(theta)^2 + cos(psi)^2*cos(theta)^2*sin(phi)^2 + cos(psi)^2*sin(phi)^2*sin(theta)^2 + cos(theta)^2*sin(phi)^2*sin(psi)^2 + sin(phi)^2*sin(psi)^2*sin(theta)^2)    -(cos(psi)*cos(theta)^2*sin(phi) + cos(psi)*sin(phi)*sin(theta)^2 - cos(phi)*sin(psi)*sin(theta))/(cos(phi)^2*cos(psi)^2*cos(theta)^2 + cos(phi)^2*cos(psi)^2*sin(theta)^2 + cos(phi)^2*cos(theta)^2*sin(psi)^2 + cos(phi)^2*sin(psi)^2*sin(theta)^2 + cos(psi)^2*cos(theta)^2*sin(phi)^2 + cos(psi)^2*sin(phi)^2*sin(theta)^2 + cos(theta)^2*sin(phi)^2*sin(psi)^2 + sin(phi)^2*sin(psi)^2*sin(theta)^2)  ;
+                                                                                                   -sin(theta)/(cos(theta)^2 + sin(theta)^2)                                                                                                                                                                                                                                                                             (cos(theta)*sin(phi))/(cos(phi)^2*cos(theta)^2 + cos(phi)^2*sin(theta)^2 + cos(theta)^2*sin(phi)^2 + sin(phi)^2*sin(theta)^2)                                                                                                                                                                                                                                                                             (cos(phi)*cos(theta))/(cos(phi)^2*cos(theta)^2 + cos(phi)^2*sin(theta)^2 + cos(theta)^2*sin(phi)^2 + sin(phi)^2*sin(theta)^2)          ];    
+              
+    if option == 1
+        r = pqr2ang_dot;
+    elseif option == 2
+        r = uvw2pos_dot;
+    elseif option == 3
+        r = pos_dot2uvw; 
+    end
+end

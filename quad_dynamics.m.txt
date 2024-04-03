@@ -1,0 +1,52 @@
+function X_dot = quad_dynamics(t, X, U, params)
+    %% Unpack the variables
+    phi = X(1);
+    theta = X(2);
+    psi = X(3);
+    I = params('Inertia');
+    I_xx = I(1,1);
+    I_yy = I(2,2);
+    I_zz = I(3,3);
+
+    p = X(4);
+    q = X(5);
+    r = X(6);
+    x = X(7); 
+    y = X(8);
+    z = X(9);
+    u = X(10);
+    v = X(11);
+    w = X(12);
+    disp("state")
+    disp(x);
+    disp(y);
+    disp(z);
+    bod_pos_vel = [u; v; w];
+    bod_ang_vel = [p; q; r];
+    %%calculate euler ang dot 
+    ang_dot = rot_mat(phi, theta, psi, 1) * bod_ang_vel;
+    pos_dot = rot_mat(phi, theta, psi, 2) * bod_pos_vel;
+    %% Calculate thrust coefficients
+    l = params('length');
+    k_t = params('k_t');
+    k_d = 0;
+    g = params('g');
+    m = params('mass');
+    tau_l = k_t * l * (U(1)*abs(U(1)) - U(2)*abs(U(2)) - U(3)*abs(U(3)) + U(4)*abs(U(4)));
+    tau_m = k_t * l * (U(1)*abs(U(1)) + U(2)*abs(U(2)) - U(3)*abs(U(3)) - U(4)*abs(U(4)));
+    tau_n = k_d * l * (U(1)*abs(U(1)) - U(2)*abs(U(2)) + U(3)*abs(U(3)) - U(4)*abs(U(4)));
+    %% calculating total thrust
+    total_thrust = (U(1)*abs(U(1)) + U(2)*abs(U(2)) + U(3)*abs(U(3)) + U(4)*abs(U(4)))*k_t;
+    %% calculate vel_dot
+    vel_dot = [0;0;g ] - (1/m)*(total_thrust*[cos(phi)*cos(psi)*sin(theta)+sin(theta)*sin(psi); cos(phi)*sin(psi)*sin(theta)-cos(psi)*sin(phi);cos(phi)*cos(theta)]);
+    %% calculate X_dot
+    p_dot = ((I_yy - I_zz)*q*r / I_xx) + tau_l/I_xx;
+    q_dot = ((I_zz - I_xx)*p*r / I_yy) + tau_m/I_yy;
+    r_dot = ((I_xx - I_yy)*p*q / I_zz) + tau_n/I_zz; 
+
+
+
+    body_ang_vel_dot = [p_dot; q_dot; r_dot];
+    X_dot = [ang_dot;body_ang_vel_dot;pos_dot;vel_dot];
+
+    
